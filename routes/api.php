@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-
+use App\Page;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,3 +16,12 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+$pages = Page::where('route','api')->get();
+foreach($pages as $page){	
+	$url = $page->url;			
+	$controller = $page->controller;			
+	Route::apiResource($url,$controller);
+}
+ 
