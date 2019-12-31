@@ -11,6 +11,23 @@
 |
 */
 
+use App\Page;
+
+
+
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+
+$pages = Page::where('route','web')->get();
+foreach($pages as $page){	
+	$method = $page->method;
+	$url = $page->url;			
+	$controller = $page->controller;			
+	$function = $page->function;	
+	Route::$method($url, "$controller@$function")->name($function);
+}
+ 
