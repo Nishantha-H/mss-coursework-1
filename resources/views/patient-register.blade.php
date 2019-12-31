@@ -78,9 +78,6 @@
                     <div class="panel-body">
                         <form class="form-horizontal" role="form"  >
 
-
-
-
                             <div class="form-group">
                                 <label  class="col-lg-3 col-sm-3 control-label">Name</label>
                                 <div class="col-lg-9">
@@ -108,7 +105,7 @@
                                 <div class="col-lg-9">
                                     <div class="iconic-input">
                                         <i class="fa fa-location-arrow"></i>
-                                        <input ng-model="the_runner.nic" id="address" type="text" class="form-control" name="address" placeholder="Address">
+                                        <input ng-model="the_runner.nic" id="nic" type="text" class="form-control" name="nic" placeholder="Patient's or guardian's NIC">
 										<p class="help-block" ng-if="the_validator.error_nic" >This field is required.</p>
                                     </div>
                                 </div>
@@ -120,7 +117,7 @@
                                 <div class="col-lg-9">
                                     <div class="iconic-input">
                                         <i class="fa fa-info"></i>
-                                        <input ng-model="the_runner.contact" id="nic" type="text" class="form-control" name="nic" placeholder="NIC Number">
+                                        <input ng-model="the_runner.contact" id="contact" type="text" class="form-control" name="contact" placeholder="Contact number">
 										<p class="help-block" ng-if="the_validator.error_contact" >This field is required.</p>
                                     </div>
                                 </div>
@@ -150,13 +147,11 @@
                                 <label  class="col-lg-3 col-sm-3 control-label">Address</label>
                                 <div class="col-lg-9">
                                     <div class="iconic-input">
-
-                           <textarea ng-model="the_runner.address" rows="6" class="form-control" style="resize:none;"></textarea>
-						   <p class="help-block" ng-if="the_validator.error_address" >This field is required.</p>
+                                       <textarea ng-model="the_runner.address" rows="6" id="address" name="address" class="form-control" style="resize:none;"></textarea>
+                                       <p class="help-block" ng-if="the_validator.error_address" >This field is required.</p>
                                     </div>
                                 </div>
                             </div>
-
 
 
                             <div class="form-group">

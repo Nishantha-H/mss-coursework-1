@@ -1366,12 +1366,12 @@ $scope.the_runner = { name:'',
 
 
 $scope.the_validator = {
-					   error_name:true,
-					   error_contact:true,
-					   error_nic:true,
-					   error_dob:true,
-                       error_gender:true,
-                       error_address:true
+					   error_name:false,
+					   error_contact:false,
+					   error_nic:false,
+					   error_dob:false,
+                       error_gender:false,
+                       error_address:false
                      };
 
 $scope.patients = [];
@@ -1482,6 +1482,9 @@ $scope.check_availability=function(){
 
 
 $scope.$watch('the_runner.dob',function(){
+
+    console.log($scope.the_runner.dob);
+
 	if($scope.the_runner.dob != ""){
       $scope.the_runner.age = $scope.calculate_age(new Date($scope.the_runner.dob.getFullYear(), $scope.the_runner.dob.getMonth(), $scope.the_runner.dob.getDate()));
 	}
@@ -1564,10 +1567,12 @@ $scope.save=function(){
 
 
 	   CRUDAPI.execute('POST',$scope.the_runner,"http://mss.test/api/patients").then(function(response){
-       NOTICE.execute('Success',response.returnResponse);
-       $scope.flush();
 
-      });
+	       console.log(response);
+
+           NOTICE.execute('Success',response.message);
+           $scope.flush();
+	   });
 	}else{
 	  NOTICE.execute('Validation Error',"Please fill all required fields");
 	}
