@@ -12,23 +12,23 @@ use App\Violation;
 use App\Hazard;
 use App\OAuthClient;
 use Illuminate\Support\Facades\Session;
-use Hash; 
+use Hash;
 use Symfony\Component\HttpFoundation\Response;
 //use App\Http\Resources\ConfigEnv;
 
 class UserController extends Controller
 {
-	
+
     public function __construct(){
         $this->middleware(['auth:api','cors'])->except('index','create','store','show','edit','update','destroy','in','oauth_client_me');
-		//new ConfigEnv(); 
-    }	
-	
-	
-    
-	
-	
-	
+		//new ConfigEnv();
+    }
+
+
+
+
+
+
     /**
      * Display a listing of the resource.
      *
@@ -38,32 +38,31 @@ class UserController extends Controller
     {
 		echo auth()->guard('api')->user();
     }
-	
+
 
     public function oauth_client_me(Request $request)
     {
 		$user = User::where('email',$request->username)->first();
-        if(count($user)>0){
-		
-        if(Hash::check($request->password, $user->password)){
-                
-				$client = OAuthClient::where('password_client',1)->first(); 
-                $data = array();
-				$data['client'] = array((object)['client_id'=>$client->id,'client_secret'=>$client->secret]);
-				echo json_encode($data);
+
+        if($user){
+            if(Hash::check($request->password, $user->password)){
+
+                    $client = OAuthClient::where('password_client',1)->first();
+                    $data = array();
+                    $data['client'] = array((object)['client_id'=>$client->id,'client_secret'=>$client->secret]);
+                    echo json_encode($data);
+            }
 		}
-		
-		}
-		
-	}	
-	
+
+	}
 
 
 
-        
-	
-	
-	
+
+
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -83,9 +82,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-       
-	 
-		
+
+
+
     }
 
     /**
@@ -96,7 +95,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-         
+
     }
 
     /**
@@ -119,18 +118,18 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-		 
 
-		 
-		 
-		 
-		 
+
+
+
+
+
 
     }
-	
-    
-	
-	
+
+
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -140,6 +139,6 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        
+
     }
 }
