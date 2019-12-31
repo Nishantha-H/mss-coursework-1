@@ -20,6 +20,9 @@ class TimeSlotController extends Controller
             return $slot;
         });
 
-        return $timeSlots;
+        return response()->json([
+            'status' => 'success',
+            'data' => $timeSlots,
+        ], 200);
     }
 }
