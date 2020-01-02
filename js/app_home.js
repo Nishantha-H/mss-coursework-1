@@ -1347,6 +1347,7 @@ app.controller('PatientRegisterController', function($scope,$http,$filter,CRUD,C
 
 $scope.the_runner = { name:'',
                       nic:'',
+					  guardian_nic:'',
 					  age:'',
 					  dob:'',
 					  contact:'',
@@ -1356,7 +1357,7 @@ $scope.the_runner = { name:'',
                       where_field:'name',
 					  specialization_id:'',
 					  appointment_date:'',
-					  appointment_time:'',
+					  appointment_time_slot:'',
 					  doctor_id:'',
                       patient_id:'',					  
 					  spinner:false
@@ -1376,7 +1377,8 @@ $scope.the_validator = {
 					 
 $scope.patients = [];
 $scope.doctors = [];
-$scope.areas = [];	
+$scope.areas = [];
+$scope.time_slots = [];	
 
   /////////////////////////////////////////  
   $scope.calendar_one_opened = false;  
@@ -1459,20 +1461,27 @@ $scope.$watch('the_runner.address',function(){
 	
   	
 $scope.$watch('the_runner.doctor_id',function(){
-	if($scope.the_runner.patient_id !="" &&  $scope.the_runner.doctor_id !="" && $scope.the_runner.appointment_date !="" && $scope.the_runner.appointment_time !=""){
-	$scope.check_availability();	
+	if($scope.the_runner.patient_id !="" &&  $scope.the_runner.doctor_id !="" && $scope.the_runner.appointment_date !="" && $scope.the_runner.appointment_time_slot !=""){
+	 //$scope.check_availability();	
 	}else{
 		NOTICE.execute('Notification',"Please select date and time");
 	}
 }); 	
 
+$scope.$watch('the_runner.appointment_time_slot',function(){
+  if($scope.the_runner.appointment_date != ""){
+  $scope.the_runner.appointment_date = moment($scope.the_runner.appointment_date).format('YYYY-MM-DD');
+  alert("Checking availability");		  
+  }
 
+}); 
 
-$scope.check_availability=function(){
-	$scope.the_runner.appointment_date = moment($scope.the_runner.appointment_date).format('YYYY-MM-DD');
-    $scope.the_runner.appointment_time = moment($scope.the_runner.appointment_time).format('HH:mm');	
-    CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/availability").then(function(response){
-      
+$scope.read_time_slots=function(){
+	
+    
+    CRUDAPI.execute('GET',$scope.the_runner,"http://123.231.52.110/asceso/time-slots").then(function(response){
+      $scope.time_slots = response.slots;
+	  
     });	 
 }		
 	
@@ -1487,9 +1496,15 @@ $scope.$watch('the_runner.dob',function(){
 	}
 });
 
+
+
+
 	
 $scope.$watch('the_runner.specialization_id',function(){
-	if($scope.the_runner.patient_id !="" && $scope.the_runner.appointment_date !="" && $scope.the_runner.appointment_time !=""){
+	
+console.log("patient "+$scope.the_runner.patient_id);
+	
+	if($scope.the_runner.patient_id !="" && $scope.the_runner.appointment_date !="" ){
 	$scope.read_doctors();			 
 	}else{
 		NOTICE.execute('Notification',"Please select date and time");		
@@ -1528,7 +1543,7 @@ $scope.the_runner.name = patient.name;
 if(patient.nic != null){
   $scope.the_runner.nic = patient.nic;	
 }else{
-  $scope.the_runner.nic = patient.nic_reference;		
+  $scope.the_runner.nic = patient.guardian_nic;		
 }
 
 
@@ -1540,6 +1555,7 @@ $scope.the_runner.gender = patient.gender;
 $scope.the_runner.contact = patient.contact;
 $scope.the_runner.address = patient.address;
 $scope.the_runner.dob = moment(patient.dob).format('YYYY-MM-DD');
+
 
   
 }
@@ -1623,10 +1639,592 @@ $scope.the_runner.address = '';
 
 
 $scope.specialization_area();
-
+$scope.read_time_slots();
 
  
 });
+
+
+
+
+
+
+
+
+app.controller('ProductController', function($scope,$http,$filter,CRUD,CRUDAPI,CRUDAPIPUT,UP,NOTICE,$interval) {
+ 
+$scope.the_runner = { title:'',
+                      product_id:'',					  
+					  category_id:'',
+					  brand_id:'',
+					  model:'',
+                      units:0,
+                      price:'', 
+                      keyword:'',					  
+					  spinner:false
+					   					  
+                     };							
+
+				 
+ 
+$scope.the_validator = { 
+					   error_title:true,
+					   error_category:true,
+					   error_brand:true,
+					   error_model:true,
+                       error_stock:true,
+                       error_price:true					   
+                     }; 
+					 
+$scope.brands = [];
+$scope.categories = [];
+$scope.products = []; 
+
+ 
+$scope.the_paginate = { totalPages:0 , 
+                        currentPage:1 , 
+						range:[],
+                        pageNumber:1						
+					  };						    
+
+$scope.navigate=function(pageNumber){	
+    if(pageNumber===undefined){
+      $scope.the_paginate.pageNumber = '1';
+    }else{
+      $scope.the_paginate.pageNumber=pageNumber;			
+	}
+    $scope.read_products();
+}   
+   
+$scope.navigateUp = function (){
+      UP.scrollTo('backtotop');
+}     
+ 
+
+$scope.$watch('the_runner.keyword',function(){
+	$scope.read_products();			 
+}); 
+ 
+ 
+ 
+   
+$scope.$watch('the_runner.title',function(){
+	
+ 
+	
+				if($scope.the_runner.title != '' && $scope.the_runner.title.length > 1 ){
+					$scope.the_validator.error_title = false;
+				}else{
+					$scope.the_validator.error_title = true;
+				}	
+});		
+$scope.$watch('the_runner.category_id',function(){
+				if($scope.the_runner.category_id != ''  ){
+					$scope.the_validator.error_category = false;
+				}else{
+					$scope.the_validator.error_category = true;
+				}	
+});	   
+$scope.$watch('the_runner.brand_id',function(){
+				if($scope.the_runner.brand_id != ''  ){
+					$scope.the_validator.error_brand = false;
+				}else{
+					$scope.the_validator.error_brand = true;
+				}	
+});   
+$scope.$watch('the_runner.model',function(){
+				if($scope.the_runner.model != ''  ){
+					$scope.the_validator.error_model = false;
+				}else{
+					$scope.the_validator.error_model = true;
+				}	
+});   
+$scope.$watch('the_runner.units',function(){
+				if($scope.the_runner.units > 0   ){
+					$scope.the_validator.error_stock = false;
+				}else{
+					$scope.the_validator.error_stock = true;
+				}	
+});    
+$scope.$watch('the_runner.price',function(){
+				if($scope.the_runner.price != ''  ){
+					$scope.the_validator.error_price = false;
+				}else{
+					$scope.the_validator.error_price = true;
+				}	
+}); 
+
+		 		
+
+
+$scope.save=function(){	
+    
+    if(  !$scope.the_validator.error_title &&
+         !$scope.the_validator.error_category &&  
+         !$scope.the_validator.error_brand &&  
+         !$scope.the_validator.error_model &&  
+         !$scope.the_validator.error_stock &&  
+         !$scope.the_validator.error_price		 
+
+	){	
+
+    $scope.the_runner.spinner = true;
+     
+     			      
+ 
+	   CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/api/productsx").then(function(response){
+       NOTICE.execute('Success',response.message); 
+       //$scope.flush();
+           
+      });	
+	}else{
+	  NOTICE.execute('Validation Error',"Please fill all required fields");
+	} 
+	  
+ 
+}
+
+
+
+
+
+
+
+$scope.read_products=function(){
+
+    $scope.products=[];
+ 
+    CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/cast-products?page="+$scope.the_paginate.pageNumber).then(function(response){
+      $scope.products     = response.data;
+	  
+      $scope.the_paginate.totalPages   = response.last_page;
+      $scope.the_paginate.currentPage  = response.current_page;
+      var pages = [];
+      for(var i=1;i<=response.last_page;i++) {          
+        pages.push(i);
+      }
+      $scope.the_paginate.range = pages; 	   
+    });  
+	
+	
+ 	
+
+ 
+}
+
+
+
+  
+ 
+   
+ $scope.read_categories=function(){
+    CRUDAPI.execute('GET',$scope.the_runner,"http://123.231.52.110/asceso/api/categories").then(function(response){
+      $scope.categories = response.categories;
+    });	 
+}
+
+ $scope.read_brands=function(){
+    CRUDAPI.execute('GET',$scope.the_runner,"http://123.231.52.110/asceso/api/brands").then(function(response){
+      $scope.brands = response.brands;
+    });	 
+}  
+   
+ 
+ $scope.delete_product=function(product){
+    CRUDAPI.execute('DELETE',$scope.the_runner,"http://123.231.52.110/asceso/api/productsx/"+product.product_id).then(function(response){
+       NOTICE.execute('Success',response.message);
+	   $scope.read_products();   
+    });	 
+ }  
+ 
+ $scope.set_product=function(product){
+	 
+	 
+	 $scope.the_runner.title = product.title;
+     $scope.the_runner.product_id = product.product_id;			  
+     $scope.the_runner.category_id = product.category_id;
+     $scope.the_runner.brand_id = product.brand_id;
+     $scope.the_runner.model = product.model;
+     $scope.the_runner.units = product.units;
+     $scope.the_runner.price = product.price; 
+	 
+	 
+	 
+	 
+ } 
+ 
+ 
+ $scope.update_product=function(){
+	 
+	 
+	 
+	 
+	 
+    CRUDAPI.execute('PUT',$scope.the_runner,"http://123.231.52.110/asceso/api/productsx/"+$scope.the_runner.product_id).then(function(response){
+		$('#edit-product').modal('hide');
+       NOTICE.execute('Success',response.message);
+	   $scope.read_products();   
+    });	 
+	
+	
+ }   
+
+ 
+   
+$scope.read_brands();
+$scope.read_categories();   
+$scope.read_products();   
+ 
+});
+
+
+
+app.controller('ProductCategoryController', function($scope,$http,$filter,CRUD,CRUDAPI,CRUDAPIPUT,UP,NOTICE,$interval) {
+ 
+$scope.the_runner = { title:'',
+                      					  
+					  category_id:'',
+					  
+                      keyword:'',					  
+					  spinner:false
+					   					  
+                     };							
+
+				 
+ 
+$scope.the_validator = { 
+					   error_title:true
+					    				   
+                     }; 
+					 
+
+$scope.categories = [];
+ 
+
+ 
+$scope.the_paginate = { totalPages:0 , 
+                        currentPage:1 , 
+						range:[],
+                        pageNumber:1						
+					  };						    
+
+$scope.navigate=function(pageNumber){	
+    if(pageNumber===undefined){
+      $scope.the_paginate.pageNumber = '1';
+    }else{
+      $scope.the_paginate.pageNumber=pageNumber;			
+	}
+    $scope.read_categories();
+}   
+   
+$scope.navigateUp = function (){
+      UP.scrollTo('backtotop');
+}     
+ 
+
+$scope.$watch('the_runner.keyword',function(){
+	$scope.read_categories();			 
+}); 
+ 
+ 
+ 
+   
+$scope.$watch('the_runner.title',function(){
+	
+ 
+	
+				if($scope.the_runner.title != '' && $scope.the_runner.title.length > 1 ){
+					$scope.the_validator.error_title = false;
+				}else{
+					$scope.the_validator.error_title = true;
+				}	
+});		
+ 
+
+		 		
+
+
+$scope.save=function(){	
+    
+    if(  !$scope.the_validator.error_title
+         		 
+
+	){	
+
+    $scope.the_runner.spinner = true;
+     
+     			      
+ 
+	   CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/api/categories").then(function(response){
+       NOTICE.execute('Success',response.message); 
+       //$scope.flush();
+           
+      });	
+	}else{
+	  NOTICE.execute('Validation Error',"Please fill all required fields");
+	} 
+	  
+ 
+}
+
+
+
+
+
+
+
+$scope.read_categories=function(){
+
+    $scope.categories=[];
+ 
+    CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/cast-categories?page="+$scope.the_paginate.pageNumber).then(function(response){
+      $scope.categories     = response.data;
+	  
+      $scope.the_paginate.totalPages   = response.last_page;
+      $scope.the_paginate.currentPage  = response.current_page;
+      var pages = [];
+      for(var i=1;i<=response.last_page;i++) {          
+        pages.push(i);
+      }
+      $scope.the_paginate.range = pages; 	   
+    });  
+	
+	
+ 	
+
+ 
+}
+
+
+
+  
+ 
+   
+ 
+ 
+ $scope.delete_category=function(category){
+    CRUDAPI.execute('DELETE',$scope.the_runner,"http://123.231.52.110/asceso/api/categories/"+category.category_id).then(function(response){
+       NOTICE.execute('Success',response.message);
+	   $scope.read_categories();   
+    });	 
+ }  
+ 
+ $scope.set_category=function(category){
+	 
+	 
+	 $scope.the_runner.title = category.title;
+      			  
+     $scope.the_runner.category_id = category.category_id;
+     
+	 
+	 
+ } 
+ 
+ 
+ $scope.update_category=function(){
+	 
+	 
+	 
+	 
+	 
+    CRUDAPI.execute('PUT',$scope.the_runner,"http://123.231.52.110/asceso/api/categories/"+$scope.the_runner.category_id).then(function(response){
+		$('#edit-category').modal('hide');
+       NOTICE.execute('Success',response.message);
+	   $scope.read_categories();   
+    });	 
+	
+	
+ }   
+
+ 
+   
+
+$scope.read_categories();   
+ 
+});
+
+
+
+
+app.controller('ProductBrandController', function($scope,$http,$filter,CRUD,CRUDAPI,CRUDAPIPUT,UP,NOTICE,$interval) {
+ 
+$scope.the_runner = { title:'',
+                      					  
+					  brand_id:'',
+					  
+                      keyword:'',					  
+					  spinner:false
+					   					  
+                     };							
+
+				 
+ 
+$scope.the_validator = { 
+					   error_title:true
+					    				   
+                     }; 
+					 
+
+$scope.brands = [];
+ 
+
+ 
+$scope.the_paginate = { totalPages:0 , 
+                        currentPage:1 , 
+						range:[],
+                        pageNumber:1						
+					  };						    
+
+$scope.navigate=function(pageNumber){	
+    if(pageNumber===undefined){
+      $scope.the_paginate.pageNumber = '1';
+    }else{
+      $scope.the_paginate.pageNumber=pageNumber;			
+	}
+    $scope.read_brands();
+}   
+   
+$scope.navigateUp = function (){
+      UP.scrollTo('backtotop');
+}     
+ 
+
+$scope.$watch('the_runner.keyword',function(){
+	$scope.read_brands();			 
+}); 
+ 
+ 
+ 
+   
+$scope.$watch('the_runner.title',function(){
+	
+ 
+	
+				if($scope.the_runner.title != '' && $scope.the_runner.title.length > 1 ){
+					$scope.the_validator.error_title = false;
+				}else{
+					$scope.the_validator.error_title = true;
+				}	
+});		
+ 
+
+		 		
+
+
+$scope.save=function(){	
+    
+    if(  !$scope.the_validator.error_title
+         		 
+
+	){	
+
+    $scope.the_runner.spinner = true;
+     
+     			      
+ 
+	   CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/api/brands").then(function(response){
+       NOTICE.execute('Success',response.message); 
+       //$scope.flush();
+           
+      });	
+	}else{
+	  NOTICE.execute('Validation Error',"Please fill all required fields");
+	} 
+	  
+ 
+}
+
+
+
+
+
+
+
+$scope.read_brands=function(){
+
+    $scope.brands=[];
+ 
+    CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/cast-brands?page="+$scope.the_paginate.pageNumber).then(function(response){
+      $scope.brands     = response.data;
+	  
+      $scope.the_paginate.totalPages   = response.last_page;
+      $scope.the_paginate.currentPage  = response.current_page;
+      var pages = [];
+      for(var i=1;i<=response.last_page;i++) {          
+        pages.push(i);
+      }
+      $scope.the_paginate.range = pages; 	   
+    });  
+	
+	
+ 	
+
+ 
+}
+
+
+
+  
+ 
+   
+ 
+ 
+ $scope.delete_brand=function(brand){
+    CRUDAPI.execute('DELETE',$scope.the_runner,"http://123.231.52.110/asceso/api/brands/"+brand.brand_id).then(function(response){
+       NOTICE.execute('Success',response.message);
+	   $scope.read_brands();   
+    });	 
+ }  
+ 
+ $scope.set_brand=function(brand){
+	 
+	 
+	 $scope.the_runner.title = brand.title;
+      			  
+     $scope.the_runner.brand_id = brand.brand_id;
+     
+	 
+	 
+ } 
+ 
+ 
+ $scope.update_brand=function(){
+	 
+	 
+	 
+	 
+	 
+    CRUDAPI.execute('PUT',$scope.the_runner,"http://123.231.52.110/asceso/api/brands/"+$scope.the_runner.brand_id).then(function(response){
+		$('#edit-brand').modal('hide');
+       NOTICE.execute('Success',response.message);
+	   $scope.read_brands();   
+    });	 
+	
+	
+ }   
+
+ 
+   
+
+$scope.read_brands();   
+ 
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

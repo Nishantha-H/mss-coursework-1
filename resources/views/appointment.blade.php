@@ -317,12 +317,21 @@
                                 <label for="exampleInputEmail1">Date</label>                                 
                                         <input ng-model="the_runner.appointment_date"   class="form-control"  placeholder="Start Date" is-open="calendar_one_opened" datepicker-popup="yyyy-MM-dd" ng-click="openCalendarOne($event)"   >
                             </div>						
-						</div>   
+						</div>
 	                    <div class="col-sm-3">
+                            <div class="form-group" style="padding-left:5px;padding-right:5px;" >
+                                <label for="exampleInputEmail1">Time</label>                                 
+                                 <select class="form-control" ng-model="the_runner.appointment_time_slot" >
+								 <option value="">Select Time</option>
+								 <option ng-repeat="slot in time_slots" value="@{{slot.id}}">@{{slot.start_at}} @{{slot.end_at}}</option>								 
+								 </select>         
+                            </div>						
+						</div>   						
+	                    <!--<div class="col-sm-3">
                           <div class="form-group" style="padding-left:5px;padding-right:5px;margin-top:-8px;" >
                             <timepicker ng-model="the_runner.appointment_time" show-meridian="ismeridian"></timepicker>
                           </div>	  
-	                    </div>
+	                    </div>-->
                         <div class="col-sm-3">
                           <div class="form-group" style="padding-left:5px;padding-right:5px;" >
                             <label for="exampleInputEmail1">Specialization Area</label>
