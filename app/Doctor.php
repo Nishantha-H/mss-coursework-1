@@ -13,4 +13,9 @@ class Doctor extends Model {
     {
         return $this->hasMany('App\DoctorCharge', 'doctor_id', 'doctor_id');
     }
+
+    public function patients()
+    {
+        return $this->hasManyThrough('App\Patient', 'App\PatientHistory', 'doctor_id', 'patient_id', 'doctor_id', 'id');
+    }
 }

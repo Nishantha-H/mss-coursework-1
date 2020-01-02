@@ -16,6 +16,18 @@ class PatientHistoryController extends Controller
         $this->middleware(['auth:api','cors']);
     }
 
+    public function show(Request $request)
+    {
+        $patientWithHistory = Patient::with('history')
+                                ->where('patient_id', $request->patient_id)
+                                ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => compact('patientWithHistory'),
+        ], 200);
+    }
+
     public function edit($id)
     {
         // Patient details

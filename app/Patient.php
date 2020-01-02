@@ -13,6 +13,6 @@ class Patient extends Model {
 
     public function history()
     {
-        return $this->hasMany('App\PatientHistory', 'doctor_id', 'id');
+        return $this->hasMany('App\PatientHistory', 'doctor_id', 'patient_id');
     }
 }
