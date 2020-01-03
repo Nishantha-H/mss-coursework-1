@@ -134,8 +134,8 @@ class PatientHistoryController extends Controller
 
             foreach ($request->prescribed_medicines as $medicine) {
                 $prescription->medicines()->create([
-                    'sku' => $medicine->sku,
-                    'qty' => $medicine->qty
+                    'title' => $medicine['title'],
+                    'qty' => $medicine['qty'],
                 ]);
             }
         }
@@ -154,7 +154,6 @@ class PatientHistoryController extends Controller
                     'patient_id' => $request->patient_id,
                     'doctor_id' => auth()->id(),
                     'received_at' => now(),
-                    'type_id' => $report['type_id'],
                 ]);
             }
         }
