@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
+use App\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-
+use File;
+use Illuminate\Support\Facades\Input;
 class RegisterController extends Controller
 {
     /*
@@ -37,7 +37,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('auth');
     }
 
     /**
@@ -49,9 +49,20 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+			'address' => 'required',
+			'nic' => 'required',
+            'company' => 'required',
+            'department' => 'required',
+			'designation' => 'required',
+            'contact' => 'required',
+            'employee_number' => 'required',
+            'shift' => 'required',
+            'avatar' => 'required' 
+ 
+			 
         ]);
     }
 
@@ -59,14 +70,59 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\Models\User
+     * @return \App\User
      */
     protected function create(array $data)
     {
-        return User::create([
+     /*   return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'password' => bcrypt($data['password']),
+			'address' => $data['address'],			 
+			'nic' => $data['nic'],
+			'company_id' => $data['company'],
+			'department_id' => $data['department'],
+			'designation' => $data['designation'],
+			'contact' => $data['contact'],
+			'employee_number' => $data['employee_number'],
+			'shift' => $data['shift']			
+			  
+			 
+        ]);  */
+		
+		
+    $fileName = 'null';
+    if (Input::file('avatar')->isValid()) {       
+        $extension = Input::file('avatar')->getClientOriginalExtension();
+        $fileName = uniqid().'.'.$extension;
+    }		
+		
+		
+		
+$userModel = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+			'address' => $data['address'],			 
+			'nic' => $data['nic'],
+			'company_id' => $data['company'],
+			'department_id' => $data['department'],
+			'designation' => $data['designation'],
+			'contact' => $data['contact'],
+			'employee_number' => $data['employee_number'],
+			'shift' => $data['shift'],
+			'avatar' => $fileName			
+			   
+			 
         ]);
+$userModel->save();
+$id = $userModel->id;		
+File::makeDirectory('images/users/'.$id, 0755, true);		
+Input::file('avatar')->move('images/users/'.$id, $fileName);		
+ 	
+		
+		
+		
+		
     }
 }
