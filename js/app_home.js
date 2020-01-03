@@ -1468,10 +1468,13 @@ $scope.$watch('the_runner.doctor_id',function(){
 	}
 }); 	
 
-$scope.$watch('the_runner.appointment_time_slot',function(){
+$scope.$watch('the_runner.appointment_date',function(){
   if($scope.the_runner.appointment_date != ""){
   $scope.the_runner.appointment_date = moment($scope.the_runner.appointment_date).format('YYYY-MM-DD');
-  alert("Checking availability");		  
+    CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/time-slots").then(function(response){
+      $scope.time_slots = response.data;
+	  
+    });	   		  
   }
 
 }); 
@@ -1491,8 +1494,10 @@ $scope.read_time_slots=function(){
  
 
 $scope.$watch('the_runner.dob',function(){
+	
 	if($scope.the_runner.dob != ""){
-      $scope.the_runner.age = $scope.calculate_age(new Date($scope.the_runner.dob.getFullYear(), $scope.the_runner.dob.getMonth(), $scope.the_runner.dob.getDate())); 	
+      $scope.the_runner.age = $scope.calculate_age(new Date($scope.the_runner.dob.getFullYear(), $scope.the_runner.dob.getMonth(), $scope.the_runner.dob.getDate())); 
+      	  
 	}
 });
 
@@ -1555,12 +1560,12 @@ $scope.the_runner.gender = patient.gender;
 $scope.the_runner.contact = patient.contact;
 $scope.the_runner.address = patient.address;
 $scope.the_runner.dob = moment(patient.dob).format('YYYY-MM-DD');
+ 
+$scope.the_runner.age = $scope.calculate_age(new Date(new Date($scope.the_runner.dob).getFullYear(), new Date($scope.the_runner.dob).getMonth(), new Date($scope.the_runner.dob).getDate())) ; 
 
-
-  
 }
 
-
+ 
 $scope.specialization_area=function(){
     CRUDAPI.execute('GET',$scope.the_runner,"http://123.231.52.110/asceso/specialization-area").then(function(response){
       $scope.areas = response.areas;
@@ -1600,7 +1605,7 @@ $scope.update=function(){
      			      
  
 	   CRUDAPI.execute('PUT',$scope.the_runner,"http://123.231.52.110/asceso/api/patients/"+$scope.the_runner.patient_id).then(function(response){
-       NOTICE.execute('Success',response.returnResponse); 
+       NOTICE.execute('Success',response.message); 
        $scope.flush();
            
       });	
@@ -1610,6 +1615,28 @@ $scope.update=function(){
 	  
  
 }    
+
+
+$scope.save_appointment=function(){	
+    
+    if( !$scope.the_validator.error_name && !$scope.the_validator.error_contact && !$scope.the_validator.error_nic   && !$scope.the_validator.error_dob &&   !$scope.the_validator.error_gender && !$scope.the_validator.error_address  ){	
+
+    $scope.the_runner.spinner = true;
+    $scope.the_runner.dob = moment($scope.the_runner.dob).format('YYYY-MM-DD');
+     			      
+ 
+	   CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/api/appointments").then(function(response){
+       NOTICE.execute('Success',response.message); 
+       $scope.flush();
+           
+      });	
+	}else{
+	  NOTICE.execute('Validation Error',"Please fill all required fields");
+	} 
+	  
+ 
+}
+
 
 $scope.calculate_age = function(dob) { 
     var diff_ms = Date.now() - dob.getTime();
@@ -1639,7 +1666,7 @@ $scope.the_runner.address = '';
 
 
 $scope.specialization_area();
-$scope.read_time_slots();
+//$scope.read_time_slots();
 
  
 });
@@ -2213,7 +2240,95 @@ $scope.read_brands();
 
 
 
+app.controller('PatientManageController', function($scope,$http,$filter,$compile,CRUD,UP) {
+ 
 
+$scope.the_runner = {  
+					  medicine_items : [], 
+					  medicine_reports : [],
+                      symptoms:'',
+                      diagnosis:'',
+                      pharmacy:'' 					  
+					   						   
+                    };	
+
+$scope.medicine_item = {   
+                      title: '',
+                      			  
+					  product_qty: '' 
+                      			   
+                   };
+				   
+$scope.medicine_report = {   
+                      title: '' 
+                      			   
+                   };				   
+ 
+
+$scope.add_medicine = function(){	
+    var cart_item = { 
+                      'title' : $scope.medicine_item.title,                     
+                      'product_qty' : $scope.medicine_item.product_qty                      					
+                    };
+					
+	var index=null;				
+	for(var i=0;i<$scope.the_runner.medicine_items.length;i++){
+		
+		if( $scope.medicine_item.title == $scope.the_runner.medicine_items[i].title ){
+			index = i;
+		}
+	}
+	
+	 	
+      if( index == null ){
+         $scope.the_runner.medicine_items.push(cart_item);
+	  } 
+    
+	
+   	
+    $scope.medicine_item.title ='';
+    
+    $scope.medicine_item.product_qty = 0;
+   								
+}
+
+
+$scope.add_report = function(){	
+    var cart_item = { 
+                      'title' : $scope.medicine_report.title                                                        					
+                    };
+					
+	var index=null;				
+	for(var i=0;i<$scope.the_runner.medicine_reports.length;i++){
+		
+		if( $scope.medicine_report.title == $scope.the_runner.medicine_reports[i].title ){
+			index = i;
+		}
+	}
+	
+	 	
+      if( index == null ){
+         $scope.the_runner.medicine_reports.push(cart_item);
+	  } 
+    
+	
+   	
+    $scope.medicine_report.title ='';
+    
+   
+   								
+}
+
+$scope.remove_medicine = function(index){
+    $scope.the_runner.medicine_items.splice(index,1);	
+}
+ 
+$scope.remove_report = function(index){
+    $scope.the_runner.medicine_reports.splice(index,1);	
+} 
+ 
+
+});
 
 
 

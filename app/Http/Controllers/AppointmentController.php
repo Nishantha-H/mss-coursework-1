@@ -32,7 +32,7 @@ class AppointmentController extends Controller
 {
 
     public function __construct(){
-        $this->middleware(['auth:api','cors'])->except('index','show','time_slots');
+        $this->middleware(['auth:api','cors'])->except('index','show','time_slots','store');
     }
 
     public function time_slots()
@@ -70,11 +70,13 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
+		 
+		 
         try{
             // save patient first
             $patient = $this->createAppointmentPatient($request->only([
-                'name', 'nic', 'guardian_nic', 'gender', 'dob', 'contact', 'address',
-            ]));
+                'name', 'nic', 'guardian_nic', 'gender', 'dob', 'contact', 'address'
+            ]),$request->age);
 
             /// Place appointment
             $appointment = $this->createAppointment($request->only([
@@ -82,7 +84,7 @@ class AppointmentController extends Controller
             ]), $patient);
 
             // create invoice
-            $invoice = $this->createInvoice($appointment);
+            $invoice = $this->createInvoice($appointment);  
 
             return response()->json([
                 'status' => 'success',
@@ -97,7 +99,7 @@ class AppointmentController extends Controller
                 'errors' => [
                     $e->getMessage(),
                 ]
-            ], 500);
+            ], 500); 
         }
 
     }
@@ -149,13 +151,13 @@ class AppointmentController extends Controller
      * @param $data
      * @return mixed
      */
-    private function createAppointmentPatient($data)
+    private function createAppointmentPatient($data,$age)
     {
         $patientData = Arr::only($data, [
             'name', 'nic', 'gender', 'dob', 'contact', 'address',
         ]);
 
-        if (  $patientData['age'] < 18 ) {
+        if (  $age < 18 ) {
             $patientData['nic'] = $data['guardian_nic'];
         }
 
@@ -197,7 +199,7 @@ class AppointmentController extends Controller
 
         return $appointment->invoice()->create([
             'total' => ($totalDoctorCharge + $totalHospitalCharge) * 100,
-        ]);
+        ]); 
     }
 
 

@@ -32,7 +32,7 @@ date_default_timezone_set('Asia/Colombo');
 class MainController extends Controller {
 
     public function __construct(){
-        $this->middleware(['auth:api','cors'])->except('index','login','register','users','read_pages','fetch_privileges','runtime_privileges','profile','appointment','patient_register','invoice','product','product_add','category','category_add','brand','brand_add','report','report_doctor_payment','report_inventory');
+        $this->middleware(['auth:api','cors'])->except('index','login','register','users','read_pages','fetch_privileges','runtime_privileges','profile','appointment','patient_register','invoice','product','product_add','category','category_add','brand','brand_add','report','report_doctor_payment','report_inventory','patient_manage');
 		//new ConfigEnv();
     }
 
@@ -225,6 +225,17 @@ class MainController extends Controller {
 		  return $this->login();
 		}
     }
+	
+    public function patient_manage()
+    {
+
+		if(Auth::check()){
+          $pack = $this->fetch_privileges();
+          return view('patient-manage')->with('privileges', $pack['privileges'])->with('privileges_subs', $pack['privileges_subs']);
+		}else{
+		  return $this->login();
+		}
+    }	
 
 
     public function read_pages(Request $request)

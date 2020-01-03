@@ -321,7 +321,7 @@
 	                    <div class="col-sm-3">
                             <div class="form-group" style="padding-left:5px;padding-right:5px;" >
                                 <label for="exampleInputEmail1">Time</label>                                 
-                                 <select class="form-control" ng-model="the_runner.appointment_time_slot" >
+                                 <select class="form-control" ng-model="the_runner.appointment_time_slot" ng-disabled="time_slots.length==0" >
 								 <option value="">Select Time</option>
 								 <option ng-repeat="slot in time_slots" value="@{{slot.id}}">@{{slot.start_at}} @{{slot.end_at}}</option>								 
 								 </select>         
@@ -357,7 +357,7 @@
 							
 <div class="col-sm-12">
   <div class="form-group" style="padding-left:5px;padding-right:5px;" >
-                             <a type="button" class="btn btn-primary" ng-click="save();" >Create Appointment</a>    
+                             <a type="button" class="btn btn-primary" ng-click="save_appointment();" >Create Appointment</a>    
                                      
                             </div>  
 </div>							
