@@ -7,7 +7,7 @@
 #
 # Host: 192.168.10.10 (MySQL 5.7.27-0ubuntu0.18.04.1)
 # Database: mss
-# Generation Time: 2020-01-03 03:54:08 +0000
+# Generation Time: 2020-01-03 07:55:24 +0000
 # ************************************************************
 
 
@@ -2823,7 +2823,7 @@ DROP TABLE IF EXISTS `prescription_items`;
 
 CREATE TABLE `prescription_items` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `sku` int(11) DEFAULT NULL,
+  `title` varchar(500) DEFAULT NULL,
   `qty` int(11) DEFAULT NULL,
   `prescription_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
