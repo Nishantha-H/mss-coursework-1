@@ -14,4 +14,5 @@ class SpecializationArea extends Model {
     {
         return $this->hasManyThrough('App\Appointment', 'App\Doctor', 'specialization_id', 'doctor_id', 'specialization_id', 'doctor_id');
     }
+    
 }
