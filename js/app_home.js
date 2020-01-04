@@ -2240,142 +2240,76 @@ $scope.read_brands();
 
 
 
-app.controller('PatientManageController', function($scope,$http,$filter,$compile,CRUD,UP) {
+app.controller('PatientManageController', function($scope,CRUDAPI,$http,$filter,$compile,CRUD,UP) {
  
-
+ 
 $scope.the_runner = {  
-					  medicine_items : [], 
-					  medicine_reports : [],
-                      symptoms:'',
-                      diagnosis:'',
-                      pharmacy:'' 					  
-					   						   
+					  where_field:'name',  					  
+					  keyword:'' 						   
                     };	
 
-$scope.medicine_item = {   
-                      title: '',
-                      			  
-					  product_qty: '' 
-                      			   
-                   };
-				   
-$scope.the_validator = { 
-					   error_medicine_items:true,
-					   error_medicine_reports:true,
-					   error_symptoms:true,
-					   error_diagnosis:true,
-					   error_pharmacy:true
-					    				   
-                     }; 				   
-				   
-				   
-$scope.$watch('the_runner.symptoms',function(){
-				if($scope.the_runner.symptoms != '' && $scope.the_runner.symptoms.length > 1 ){
-					$scope.the_validator.error_symptoms = false;
-				}else{
-					$scope.the_validator.error_symptoms = true;
-				}	
-});						   
-
-$scope.$watch('the_runner.diagnosis',function(){
-				if($scope.the_runner.diagnosis != '' && $scope.the_runner.diagnosis.length > 1 ){
-					$scope.the_validator.error_diagnosis = false;
-				}else{
-					$scope.the_validator.error_diagnosis = true;
-				}	
-});						   
-				   
-$scope.$watch('the_runner.pharmacy',function(){
-				if($scope.the_runner.pharmacy != '' && $scope.the_runner.pharmacy.length > 1 ){
-					$scope.the_validator.error_pharmacy = false;
-				}else{
-					$scope.the_validator.error_pharmacy = true;
-				}	
-});
-
-$scope.$watch('the_runner.medicine_items', function(newValue, oldValue) {
-	if($scope.the_runner.medicine_items.length > 0){
-		$scope.the_validator.error_medicine_items = false;		
-	}else{
-		$scope.the_validator.error_medicine_items = true;				
-	}	
-},true);						   				   
-
-$scope.$watch('the_runner.medicine_reports', function(newValue, oldValue) {
-	if($scope.the_runner.medicine_reports.length > 0){
-		$scope.the_validator.error_medicine_reports = false;		
-	}else{
-		$scope.the_validator.error_medicine_reports = true;				
-	}	
-},true);						   				   
-				   
-$scope.medicine_report = {   
-                      title: '' 
-                      			   
-                   };				   
- 
-
-$scope.add_medicine = function(){	
-    var cart_item = { 
-                      'title' : $scope.medicine_item.title,                     
-                      'product_qty' : $scope.medicine_item.product_qty                      					
-                    };
 					
-	var index=null;				
-	for(var i=0;i<$scope.the_runner.medicine_items.length;i++){
-		
-		if( $scope.medicine_item.title == $scope.the_runner.medicine_items[i].title ){
-			index = i;
-		}
-	}
-	
-	 	
-      if( index == null ){
-         $scope.the_runner.medicine_items.push(cart_item);
-	  } 
-    
-	
-   	
-    $scope.medicine_item.title ='';
-    
-    $scope.medicine_item.product_qty = 0;
-   								
-}
+$scope.patients = [];					
 
-
-$scope.add_report = function(){	
-    var cart_item = { 
-                      'title' : $scope.medicine_report.title                                                        					
-                    };
+$scope.search_categories = [{category_id:'nic',title:'NIC'},{category_id:'nic_guardian',title:'GUARDIAN NIC'},{category_id:'name',title:'Name'}];					 					
 					
-	var index=null;				
-	for(var i=0;i<$scope.the_runner.medicine_reports.length;i++){
-		
-		if( $scope.medicine_report.title == $scope.the_runner.medicine_reports[i].title ){
-			index = i;
-		}
+$scope.the_paginate = { totalPages:0 , 
+                        currentPage:1 , 
+						range:[],
+                        pageNumber:1						
+					  };						    
+
+$scope.navigate=function(pageNumber){	
+    if(pageNumber===undefined){
+      $scope.the_paginate.pageNumber = '1';
+    }else{
+      $scope.the_paginate.pageNumber=pageNumber;			
 	}
-	
-	 	
-      if( index == null ){
-         $scope.the_runner.medicine_reports.push(cart_item);
-	  } 
-    
-	
-   	
-    $scope.medicine_report.title ='';
-    
+    $scope.read_patients();
+}   
    
-   								
+$scope.navigateUp = function (){
+      UP.scrollTo('backtotop');
+}     
+ 
+
+$scope.$watch('the_runner.keyword',function(){
+	$scope.read_patients();			 
+});  
+ 
+ 
+ 
+ 
+ 
+$scope.read_patients=function(){
+
+    $scope.patients=[];
+ 
+    CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/cast-patients?page="+$scope.the_paginate.pageNumber).then(function(response){
+      $scope.patients     = response.data;
+	  
+      $scope.the_paginate.totalPages   = response.last_page;
+      $scope.the_paginate.currentPage  = response.current_page;
+      var pages = [];
+      for(var i=1;i<=response.last_page;i++) {          
+        pages.push(i);
+      }
+      $scope.the_paginate.range = pages; 	   
+    });  
+	
+	
+ 	
+
+ 
 }
 
-$scope.remove_medicine = function(index){
-    $scope.the_runner.medicine_items.splice(index,1);	
-}
+
+
+
+  
+   
+$scope.read_patients();    
  
-$scope.remove_report = function(index){
-    $scope.the_runner.medicine_reports.splice(index,1);	
-} 
  
 
 });
@@ -2463,13 +2397,13 @@ $scope.medicine_item = {
 					  product_qty: '' 
                       			   
                    };
-				   
+			   
 $scope.the_validator = { 
-					   error_medicine_items:true,
-					   error_medicine_reports:true,
-					   error_symptoms:true,
-					   error_diagnosis:true,
-					   error_remarks:true
+					   error_medicine_items:false,
+					   error_medicine_reports:false,
+					   error_symptoms:false,
+					   error_diagnosis:false,
+					   error_remarks:false
 					    				   
                      }; 				   
 				   
