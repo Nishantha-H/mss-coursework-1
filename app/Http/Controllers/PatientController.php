@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Dompdf\Exception;
 use Illuminate\Http\Request;
 use App\User;
 use Auth;
@@ -16,61 +17,60 @@ use Mail;
 use File;
 use PDF;
 
- 
+
 
 use Illuminate\Support\Facades\Session;
- 
+
 use Symfony\Component\HttpFoundation\Response;
 //use App\Http\Resources\ConfigEnv;
 
 class PatientController extends Controller
 {
-	
+
     public function __construct(){
         $this->middleware(['auth:api','cors'])->except('store','patient_search','specialization_area','doctors','update');
-		//new ConfigEnv(); 
-    }	
-	
-	
+    }
+
+
 public function patient_search(Request $request){
-    		
-	$data =  Patient::orderBy('patient_id','ASC')->where($request->where_field, 'like', '%' . $request->keyword . '%')->get();	  
+
+	$data =  Patient::orderBy('patient_id','ASC')->where($request->where_field, 'like', '%' . $request->keyword . '%')->get();
 	foreach($data as $row){
-	  		  
+
 	}
-    echo json_encode($data);			  
+    echo json_encode($data);
 }
 
 
     public function specialization_area()
-    {    
+    {
 	     $data = array();
 		 $areas = SpecializationArea::all();
-		 $data['areas'] = $areas;		 
+		 $data['areas'] = $areas;
 		 echo json_encode($data);
     }
-	
+
     public function doctors(Request $request)
-    {    
+    {
 	     $data = array();
 		 $doctors = Doctor::where('specialization_id',$request->specialization_id)->get();;
-		 
-		 
+
+
 		 foreach($doctors as $doctor){
-			 
-			$employee = Employee::where('employee_id',$doctor->employee_id)->first(); 
-			 
-			 
+
+			$employee = Employee::where('employee_id',$doctor->employee_id)->first();
+
+
 			$doctor->first_name = $employee->first_name;
-			$doctor->last_name =  $employee->last_name;			
+			$doctor->last_name =  $employee->last_name;
 		 }
-		 
-		 
-		 $data['doctors'] = $doctors;		 
+
+
+		 $data['doctors'] = $doctors;
 		 echo json_encode($data);
-    }	
-	
-	
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -78,15 +78,8 @@ public function patient_search(Request $request){
      */
     public function index()
     {
-		 
+
     }
-	
-	
-     	
-	
-	
-	
-	
 
     /**
      * Show the form for creating a new resource.
@@ -106,39 +99,43 @@ public function patient_search(Request $request){
      */
     public function store(Request $request)
     {
-		 
- 
-        
-    
-	   $data = array();
-	   
-        $patient = new Patient(); 
-        
-		$patient->name = $request->name;
-	    if($request->age < 18){
-		$patient->nic_reference = $request->nic;				
-		$patient->nic = null;					
-		}else{
-		$patient->nic = $request->nic;			
-		$patient->nic_reference = null;						
-		}	
+	    $data = array();
 
+	    try{
+            $patient = new Patient();
 
-		$patient->contact = $request->contact;			
-		$patient->gender = $request->gender;
-		$patient->dob = $request->dob;
-		
-		$patient->address = $request->address;
-		$patient->save(); 	
-		 	
-		
-	  
-		$data ["returnResponse"] = 'Success !';
-		echo json_encode($data); 
- 
+            $patient->name = $request->name;
+            if($request->age < 18){
+                $patient->guardian_nic = $request->nic;
+                $patient->nic = null;
+            }else{
+                $patient->nic = $request->nic;
+                $patient->guardian_nic = null;
+            }
+
+            $patient->contact = $request->contact;
+            $patient->gender = $request->gender;
+            $patient->dob = $request->dob;
+
+            $patient->address = $request->address;
+            $patient->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Patient created successfully',
+            ], 201);
+
+        }catch(\Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong',
+                'errors' => [
+                    $e->getMessage(),
+                ]
+            ], 500);
+        }
+
     }
-	
- 
 
     /**
      * Display the specified resource.
@@ -148,10 +145,10 @@ public function patient_search(Request $request){
      */
     public function show($id)
     {
-         
-		  		 
-		 
-		 
+
+
+
+
     }
 
     /**
@@ -174,32 +171,32 @@ public function patient_search(Request $request){
      */
     public function update(Request $request, $id)
     {
-          
- 
+
+
 		$data = array();
 
         $patient = Patient::where('patient_id',$request->patient_id)->first();
-		
- 	
-		
+
+
+
 		$patient->name = $request->name;
 	    if($request->age < 18){
-		$patient->nic_reference = $request->nic;				
-		$patient->nic = null;					
+		$patient->guardian_nic = $request->nic;
+		$patient->nic = null;
 		}else{
-		$patient->nic_reference = null;							
-		$patient->nic = $request->nic;			
-		}	
+		$patient->guardian_nic = null;
+		$patient->nic = $request->nic;
+		}
 		$patient->contact = $request->contact;
-		$patient->gender = $request->gender;		
+		$patient->gender = $request->gender;
 		$patient->dob = $request->dob;
 		$patient->address = $request->address;
         $patient->save();
-		$data['returnResponse'] = "Patient Updated";			
-        echo json_encode($data);       
-	 	
-	 
-		 
+		$data['returnResponse'] = "Patient Updated";
+        echo json_encode($data);
+
+
+
     }
 
     /**
@@ -210,11 +207,11 @@ public function patient_search(Request $request){
      */
     public function destroy($id)
     {
-		 
-     
+
+
     }
-	
-	 
-	
-	
+
+
+
+
 }

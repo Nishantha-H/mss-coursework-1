@@ -24,11 +24,6 @@ class UserController extends Controller
 		//new ConfigEnv();
     }
 
-
-
-
-
-
     /**
      * Display a listing of the resource.
      *
