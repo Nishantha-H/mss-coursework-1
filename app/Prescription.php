@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Prescription extends Model
 {
+	public $timestamps=false;
     protected $guarded = [];
 
     const APPOINTMENT = 'App\Appointment';

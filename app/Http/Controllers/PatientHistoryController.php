@@ -6,14 +6,19 @@ use App\Patient;
 use App\PatientHistory;
 use App\PatientReport;
 use App\Prescription;
-use Dotenv\Validator;
+//use Dotenv\Validator;
+//use Illuminate\Validation\Validator;
+use Validator;
 use Illuminate\Http\Request;
+use PrescriptionItem;
+
+
 
 class PatientHistoryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:api','cors']);
+        $this->middleware(['auth:api','cors'])->except('update');
     }
 
     public function show(Request $request)
@@ -73,6 +78,10 @@ class PatientHistoryController extends Controller
 
     public function update(Request $request)
     {
+		
+	  
+		
+		/*
         // validate
         $validator = Validator::make($request, [
             'patient_id' => 'required',
@@ -84,7 +93,7 @@ class PatientHistoryController extends Controller
                 'status' => 'validation_error',
                 'errors' => $validator->errors(),
             ], 419);
-        }
+        } */
 
         try{
             // update symptoms, diagnosis, remarks
@@ -111,7 +120,7 @@ class PatientHistoryController extends Controller
                 'status' => 'error',
                 'message' => 'Something went wrong',
                 'errors' => [
-                    $e->getMessage(),
+                    $e
                 ]
             ], 500);
 
@@ -131,11 +140,12 @@ class PatientHistoryController extends Controller
                 'prescribable_id' => $request->appointment_id,
                 'prescribable_type' => Prescription::APPOINTMENT,
             ]);
-
-            foreach ($request->prescribed_medicines as $medicine) {
+			
+			
+            foreach ($request->medicine_items as $medicine) {
                 $prescription->medicines()->create([
-                    'title' => $medicine['title'],
-                    'qty' => $medicine['qty'],
+                    'sku' => $medicine['sku'],
+                    'qty' => $medicine['qty']
                 ]);
             }
         }
@@ -147,8 +157,8 @@ class PatientHistoryController extends Controller
      */
     private function storeReports(Request $request)
     {
-        if ($request->has('reports')) {
-            foreach ($request->reports as $report) {
+        if ($request->has('medicine_reports')) {
+            foreach ($request->medicine_reports as $report) {
                 PatientReport::create([
                     'name' => $report['report_name'],
                     'patient_id' => $request->patient_id,

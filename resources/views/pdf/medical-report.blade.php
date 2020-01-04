@@ -85,15 +85,15 @@
                     <table class="inner-table">
                         <tr>
                             <td>Name: </td>
-                            <td>{{$report->patient->name}}</td>
+                            <td>John doe</td>
                         </tr>
                         <tr>
                             <td>NIC: </td>
-                            <td>{{$report->patient->nic}}</td>
+                            <td>987123321V</td>
                         </tr>
                         <tr>
                             <td>Gender: </td>
-                            <td>{{$report->patient->gender == 'M' ? 'Male' : 'Female'}}</td>
+                            <td>Male</td>
                         </tr>
                     </table>
                 </td>
@@ -101,15 +101,15 @@
                     <table class="inner-table">
                         <tr>
                             <td>Date of birth: </td>
-                            <td>{{$report->patient->dob->format('Y-m-d')}}</td>
+                            <td>2019-12-12</td>
                         </tr>
                         <tr>
                             <td>Age: </td>
-                            <td>{{now()->diffInYears($report->patient->dob)}}</td>
+                            <td>20</td>
                         </tr>
                         <tr>
                             <td>Contact: </td>
-                            <td>{{$report->patient->contact}}</td>
+                            <td>0711212123</td>
                         </tr>
                     </table>
                 </td>
@@ -123,27 +123,28 @@
 
     <div class="results">
         <h4>Results</h4>
-        <p>{{$report->patient->results}}</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt harum magni praesentium in aliquam fugiat vel, corporis. Nulla sint totam, quia placeat accusamus, consectetur, doloribus assumenda vero, minima eligendi eos. At earum voluptatum deleniti sunt sequi non, cumque eius corrupti inventore nisi asperiores optio delectus ipsa accusamus recusandae provident velit.</p>
     </div>
 
     <br><br>
 
     <div class="remarks">
         <h4>Remarks</h4>
-        <p>{{$report->patient->remarks}}</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt harum magni praesentium in aliquam fugiat vel, corporis. Nulla sint totam, quia placeat accusamus, consectetur, doloribus assumenda vero, minima eligendi eos. At earum voluptatum deleniti sunt sequi non, cumque eius corrupti inventore nisi asperiores optio delectus ipsa accusamus recusandae provident velit.</p>
     </div>
 
     <br><br><br>
+
 
     <div>
         <table>
             <tbody>
             <tr>
                 <td>
-                    <p>Tested at: {{$report->tested_at->format('Y-m-d h:i:s A')}}</p>
+                    <p>Tested at: 2019-12-12 08:00</p>
                 </td>
                 <td>
-                    <p>Tested at: {{$report->tested_by->name}}</p>
+                    <p>Tested at: Johne doe</p>
                 </td>
                 <td>
                     <p>...........................................</p>
@@ -162,7 +163,7 @@
             <tbody>
             <tr>
                 <td>
-                    <small>Generated at: {{date('Y-m-d h:i:s A')}}</small>
+                    <small>Generated at: 2019-12-12 08:30</small>
                 </td>
             </tr>
             </tbody>

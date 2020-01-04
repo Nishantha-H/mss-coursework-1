@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Patient;
 use App\PatientReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -60,11 +59,7 @@ class PatientReportController extends Controller
             ], 401);
         }
 
-        $report = PatientReport::with(['patient', 'doctor'])
-                                ->where('id', $id)
-                                ->first();
-
-        $pdf = PDF::loadView('pdf.medical-report', compact('report'));
+        $pdf = PDF::loadView('pdf.medical-report', []);
         $time = time();
         return $pdf->stream("report-{$time}.pdf");
     }

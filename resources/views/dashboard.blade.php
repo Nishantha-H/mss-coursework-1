@@ -9,23 +9,27 @@
   @include('layouts.title-document')
 
   <!--gritter css-->
-  <link rel="stylesheet" type="text/css" href="http://mss.test/js/gritter/css/jquery.gritter.css" />
+  <link rel="stylesheet" type="text/css" href="http://123.231.52.110/asceso/js/gritter/css/jquery.gritter.css" />
 
  <!--dashboard calendar-->
   <link href="css/clndr.css" rel="stylesheet">
 
   <!--Morris Chart CSS -->
+
   <link rel="stylesheet" href="js/morris-chart/morris.css">
 
   <!--common-->
   <link href="http://mss.test/css/style.css" rel="stylesheet">
   <link href="http://mss.test/css/style-responsive.css" rel="stylesheet">
 
+  <link rel="stylesheet" href="js/morris-chart/morris.css">
+
 
 
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
+
   <script src="http://mss.test/js/html5shiv.js"></script>
   <script src="http://mss.test/js/respond.min.js"></script>
   <![endif]-->
@@ -48,6 +52,7 @@
         </div>
     </div>
     <!-- left side end-->
+
 
     <!-- main content start-->
     <div class="main-content" >
@@ -74,6 +79,8 @@
 
         <!--body wrapper start-->
         <div class="wrapper">
+
+
 
 
         <!-- page heading start-->
@@ -111,6 +118,9 @@
         <!-- page heading end-->
 
 
+        <!-- page heading end-->
+
+
             <div class="row">
                 <div class="col-md-12">
                     <!--statistics start-->
@@ -137,6 +147,7 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
                         <div class="col-md-3 col-xs-6 col-sm-3">
                             <div class="panel red">
                                 <div class="symbol">
@@ -161,10 +172,12 @@
                         </div>
                     </div>
 
+
                     <!--statistics end-->
                 </div>
 
             </div>
+
 
             <div class="row">
                 <div class="col-md-4">
@@ -388,6 +401,11 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+
+
+        </div>
             </div>
 
 
