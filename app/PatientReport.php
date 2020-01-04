@@ -26,9 +26,4 @@ class PatientReport extends Model
     {
         return $this->belongsTo('App\PatientReportType', 'type_id', 'id');
     }
-
-    public function testedBy()
-    {
-        return $this->hasOne('App\User', 'tested_by', 'id');
-    }
 }

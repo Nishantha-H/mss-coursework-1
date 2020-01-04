@@ -181,10 +181,10 @@ public function patient_search(Request $request){
 
 		$patient->name = $request->name;
 	    if($request->age < 18){
-		$patient->nic_reference = $request->nic;
+		$patient->guardian_nic = $request->nic;
 		$patient->nic = null;
 		}else{
-		$patient->nic_reference = null;
+		$patient->guardian_nic = null;
 		$patient->nic = $request->nic;
 		}
 		$patient->contact = $request->contact;
