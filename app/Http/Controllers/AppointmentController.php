@@ -34,7 +34,7 @@ class AppointmentController extends Controller
     public function __construct(){
         $this->middleware(['auth:api','cors'])->except('index','show','time_slots','store','cast_appointments');
     }
-
+ //$this->middleware(['auth:api','cors'])->except('index','show','availability');
     public function time_slots()
     {
 		 $data = array();
@@ -54,15 +54,20 @@ class AppointmentController extends Controller
         foreach($appointments as $appointment){
 
 		  $doctor = Doctor::where('doctor_id',$appointment->doctor_id)->first();
-		  $employee = Employee::where('employee_id',$doctor->employee_id)->first();
-
+		  //$doc_id = (int)$doctor->employee_id;		  
+		  $doc_id = 1;
+		                                                     
+		  $employee = Employee::where('employee_id',$doc_id)->first();
+          if($appointment->time_slot_id != null){
 		  $timeslot = TimeSlot::where('id',$appointment->time_slot_id)->first();
 		  $appointment->timeslot_start = $timeslot->start_at;
-		  $appointment->timeslot_end = $timeslot->end_at;
+		  $appointment->timeslot_end = $timeslot->end_at;			  
+		  }
+
 
 		  $appointment->doctor_name =  $employee->first_name.' '.$employee->last_name;
 		  $patient = Patient::where('patient_id',$appointment->patient_id)->first();
-		  $appointment->patient =  $patient;
+		  $appointment->patient =  $patient;  
 
 		}
 
@@ -71,9 +76,8 @@ class AppointmentController extends Controller
 	    echo json_encode($appointments);
 
     }
-        $this->middleware(['auth:api','cors'])->except('index','show','availability');
-    }
-
+       
+   
     public function availability(Request $request)
     {
 		 echo 'in';
@@ -109,11 +113,11 @@ class AppointmentController extends Controller
     {
 
 
-        try{
+/*        try{
             // save patient first
             $patient = $this->createAppointmentPatient($request->only([
                 'name', 'nic', 'guardian_nic', 'gender', 'dob', 'contact', 'address'
-            ]),$request->age);
+            ]),$request->age); */
         try{
             // save patient first
             $patient = $this->createAppointmentPatient($request->only([

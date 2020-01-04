@@ -2334,8 +2334,9 @@ $scope.the_runner = { title:'',
                       diagnosis:'',
                       remarks:'',
                       prescription:'',
-                      appointment_id:''					  
-					   					  
+                      appointment_id:''	,
+                      latest_diagnosis:'' ,					  
+					  latest_symptoms:'' 
                      };							
 
 				 
@@ -2388,6 +2389,10 @@ $scope.set_appointment=function(appointment){
   $scope.the_runner.patient_contact = appointment.patient.contact;  
   $scope.the_runner.patient_id = appointment.patient_id;  
   $scope.the_runner.doctor_id = appointment.doctor_id;  
+  
+  $scope.history();  
+  
+  
 }; 
 
 		 		
@@ -2546,7 +2551,33 @@ $scope.read_appointments=function(){
 $scope.save = function(){
 	
     CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/patient-history-update").then(function(response){
+		
       NOTICE.execute('Success',response.message);	   
+	  		$('#edit-appointment').modal('hide');
+			$scope.read_appointments();   
+    });	
+	
+}
+
+$scope.history = function(){
+	
+    CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/patient-history-show").then(function(response){
+		
+		if(response.data.history.diagnosis.length > 2){
+	      $scope.the_runner.latest_diagnosis = response.data.history.diagnosis;				
+		}else{
+	      $scope.the_runner.latest_diagnosis = "No data found";							
+		}
+		
+		if(response.data.history.symptoms.length > 2){
+	      $scope.the_runner.latest_symptoms = response.data.history.symptoms;				
+		}else{
+	      $scope.the_runner.latest_symptoms = "No data found";							
+		}		
+		
+
+      //NOTICE.execute('Success',response.message);	   
+	  console.log(response);	    
     });	
 	
 }

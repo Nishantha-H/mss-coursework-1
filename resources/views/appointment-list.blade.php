@@ -219,10 +219,10 @@
                 </section>
                 <aside class="mail-nav mail-nav-bg-color">
                     <header class="header"> 
-					  <div class="pull-right">
+					  <!--<div class="pull-right">
                         <a class="btn btn-success btn-sm" style="margin-top:10px;margin-right:5px;" ><i class="fa fa-print"></i> Report One</a>
                         <a class="btn btn-success btn-sm" style="margin-top:10px;margin-right:5px;" ><i class="fa fa-print"></i> Report Two</a>						
-					  </div>
+					  </div>-->
 					  <h4>History&nbsp;<i ng-if="the_runner.spinner" style="color:#ffffff;" class="fa fa-spinner fa-spin"></i></h4> 
 					
 			 
@@ -264,7 +264,7 @@
                                 <div class="panel-body">								    
                                 <h4  >Latest Diagnosis</h4>			
                                   <div class="well" style="width:100%;" >
-                                    <textarea style="width:100%;height:150px;;overflow: scroll;resize:none;"   readonly  ></textarea> 
+                                    <textarea style="width:100%;height:150px;;overflow: scroll;resize:none;"   readonly ng-model="the_runner.latest_diagnosis" ></textarea> 
                                   </div>
                                 </div>
                             </div>
@@ -272,9 +272,9 @@
                         <div class="col-md-12">
                             <div class="panel">
                                 <div class="panel-body">								    
-                                <h4  >Prescriptions</h4>			
+                                <h4  >Symptoms / Prescriptions</h4>			
                                   <div class="well" style="width:100%;" >
-                                    <textarea style="width:100%;height:150px;;overflow: scroll;resize:none;"   readonly  ></textarea> 
+                                    <textarea style="width:100%;height:150px;;overflow: scroll;resize:none;"   readonly ng-model="the_runner.latest_symptoms" ></textarea> 
                                   </div>
                                 </div>
                             </div>

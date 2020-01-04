@@ -18,7 +18,7 @@ class PatientHistoryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:api','cors'])->except('update');
+        $this->middleware(['auth:api','cors'])->except('update','edit');
     }
 
     public function show(Request $request)
@@ -33,8 +33,9 @@ class PatientHistoryController extends Controller
         ], 200);
     }
 
-    public function edit($id)
+    public function edit(Request $request)
     {
+		$id = $request->patient_id;
         // Patient details
         $patient = Patient::find($id);
 
@@ -59,10 +60,10 @@ class PatientHistoryController extends Controller
                                     ->first();
 
         // reports
-        $latestReports = $patient
+/*        $latestReports = $patient
                             ->reports()
                                 ->latest()
-                                ->get(3);
+                                ->get(3);*/
 
         return response()->json([
             'status' => 'success',
@@ -70,7 +71,7 @@ class PatientHistoryController extends Controller
                 'patient' => $patient,
                 'history' => $latestHistory,
                 'prescriptions' => $latestPrescription,
-                'reports' => $latestReports,
+                //'reports' => $latestReports,
             ],
         ], 200);
 
@@ -160,7 +161,7 @@ class PatientHistoryController extends Controller
         if ($request->has('medicine_reports')) {
             foreach ($request->medicine_reports as $report) {
                 PatientReport::create([
-                    'name' => $report['report_name'],
+                    'name' => $report['title'],
                     'patient_id' => $request->patient_id,
                     'doctor_id' => auth()->id(),
                     'received_at' => now(),
