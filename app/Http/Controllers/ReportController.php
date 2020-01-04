@@ -10,11 +10,11 @@ class ReportController extends Controller
 {
     public function appointmentsForSpecializationAreaReport(Request $request)
     {
-        $builder = SpecializationArea::withCount(['appointments as active_count', function($query){
-                                $query->where('cancelled_at', null);
+        $builder = SpecializationArea::withCount(['appointments as active_count' => function($query){
+                                $query->whereNull('cancelled_at');
                             }])
-                            ->withCount(['appointments as cancelled_count', function($query){
-                                $query->whereNot('cancelled_at', null);
+                            ->withCount(['appointments as cancelled_count' => function($query){
+                                $query->whereNotNull('cancelled_at');
                             }]);
 
         if($request->has('date_from') && $request->has('date_to')){
