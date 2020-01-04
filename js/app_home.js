@@ -2259,6 +2259,56 @@ $scope.medicine_item = {
                       			   
                    };
 				   
+$scope.the_validator = { 
+					   error_medicine_items:true,
+					   error_medicine_reports:true,
+					   error_symptoms:true,
+					   error_diagnosis:true,
+					   error_pharmacy:true
+					    				   
+                     }; 				   
+				   
+				   
+$scope.$watch('the_runner.symptoms',function(){
+				if($scope.the_runner.symptoms != '' && $scope.the_runner.symptoms.length > 1 ){
+					$scope.the_validator.error_symptoms = false;
+				}else{
+					$scope.the_validator.error_symptoms = true;
+				}	
+});						   
+
+$scope.$watch('the_runner.diagnosis',function(){
+				if($scope.the_runner.diagnosis != '' && $scope.the_runner.diagnosis.length > 1 ){
+					$scope.the_validator.error_diagnosis = false;
+				}else{
+					$scope.the_validator.error_diagnosis = true;
+				}	
+});						   
+				   
+$scope.$watch('the_runner.pharmacy',function(){
+				if($scope.the_runner.pharmacy != '' && $scope.the_runner.pharmacy.length > 1 ){
+					$scope.the_validator.error_pharmacy = false;
+				}else{
+					$scope.the_validator.error_pharmacy = true;
+				}	
+});
+
+$scope.$watch('the_runner.medicine_items', function(newValue, oldValue) {
+	if($scope.the_runner.medicine_items.length > 0){
+		$scope.the_validator.error_medicine_items = false;		
+	}else{
+		$scope.the_validator.error_medicine_items = true;				
+	}	
+},true);						   				   
+
+$scope.$watch('the_runner.medicine_reports', function(newValue, oldValue) {
+	if($scope.the_runner.medicine_reports.length > 0){
+		$scope.the_validator.error_medicine_reports = false;		
+	}else{
+		$scope.the_validator.error_medicine_reports = true;				
+	}	
+},true);						   				   
+				   
 $scope.medicine_report = {   
                       title: '' 
                       			   
@@ -2333,7 +2383,247 @@ $scope.remove_report = function(index){
 
 
 
+app.controller('AppointmentController', function($scope,$http,$filter,CRUD,CRUDAPI,CRUDAPIPUT,UP,NOTICE,$interval) {
+ 
+$scope.the_runner = { title:'',
+                      patient_name:'',
+                      patient_nic:'',
+                      patient_address:'',
+                      patient_contact:'',
+                      patient_id:'',
+                      doctor_id:'',
+                      keyword:'',					  
+					  spinner:false,
+					  medicine_items : [], 
+					  medicine_reports : [],
+                      symptoms:'',
+                      diagnosis:'',
+                      remarks:'',
+                      prescription:'',
+                      appointment_id:''					  
+					   					  
+                     };							
 
+				 
+ 
+$scope.the_validator = { 
+					   error_title:true,
+					   error_category:true,
+					   error_brand:true,
+					   error_model:true,
+                       error_stock:true,
+                       error_price:true					   
+                     }; 
+					 
+$scope.appointments = [];
+
+
+ 
+$scope.the_paginate = { totalPages:0 , 
+                        currentPage:1 , 
+						range:[],
+                        pageNumber:1						
+					  };						    
+
+$scope.navigate=function(pageNumber){	
+    if(pageNumber===undefined){
+      $scope.the_paginate.pageNumber = '1';
+    }else{
+      $scope.the_paginate.pageNumber=pageNumber;			
+	}
+    $scope.read_appointments();
+}   
+   
+$scope.navigateUp = function (){
+      UP.scrollTo('backtotop');
+}     
+ 
+
+$scope.$watch('the_runner.keyword',function(){
+	$scope.read_appointments();			 
+}); 
+ 
+ 
+ 
+   
+$scope.set_appointment=function(appointment){
+  $scope.the_runner.appointment_id = appointment.id;
+  $scope.the_runner.patient_name = appointment.patient.name;	
+  $scope.the_runner.patient_nic = appointment.patient.nic;	  
+  $scope.the_runner.patient_address = appointment.patient.address;	  
+  $scope.the_runner.patient_contact = appointment.patient.contact;  
+  $scope.the_runner.patient_id = appointment.patient_id;  
+  $scope.the_runner.doctor_id = appointment.doctor_id;  
+}; 
+
+		 		
+$scope.medicine_item = {   
+                      title: '',
+                      			  
+					  product_qty: '' 
+                      			   
+                   };
+				   
+$scope.the_validator = { 
+					   error_medicine_items:true,
+					   error_medicine_reports:true,
+					   error_symptoms:true,
+					   error_diagnosis:true,
+					   error_remarks:true
+					    				   
+                     }; 				   
+				   
+				   
+$scope.$watch('the_runner.symptoms',function(){
+				if($scope.the_runner.symptoms != '' && $scope.the_runner.symptoms.length > 1 ){
+					$scope.the_validator.error_symptoms = false;
+				}else{
+					$scope.the_validator.error_symptoms = true;
+				}	
+});						   
+
+$scope.$watch('the_runner.diagnosis',function(){
+				if($scope.the_runner.diagnosis != '' && $scope.the_runner.diagnosis.length > 1 ){
+					$scope.the_validator.error_diagnosis = false;
+				}else{
+					$scope.the_validator.error_diagnosis = true;
+				}	
+});						   
+				   
+$scope.$watch('the_runner.remarks',function(){
+				if($scope.the_runner.remarks != '' && $scope.the_runner.remarks.length > 1 ){
+					$scope.the_validator.error_remarks = false;
+				}else{
+					$scope.the_validator.error_remarks = true;
+				}	
+});
+
+$scope.$watch('the_runner.medicine_items', function(newValue, oldValue) {
+	if($scope.the_runner.medicine_items.length > 0){
+		$scope.the_validator.error_medicine_items = false;		
+	}else{
+		$scope.the_validator.error_medicine_items = true;				
+	}	
+},true);						   				   
+
+$scope.$watch('the_runner.medicine_reports', function(newValue, oldValue) {
+	if($scope.the_runner.medicine_reports.length > 0){
+		$scope.the_validator.error_medicine_reports = false;		
+	}else{
+		$scope.the_validator.error_medicine_reports = true;				
+	}	
+},true);						   				   
+				   
+$scope.medicine_report = {   
+                      title: '' 
+                      			   
+                   };				   
+ 
+
+$scope.add_medicine = function(){	
+    var cart_item = { 
+                      'sku' : $scope.medicine_item.title,                     
+                      'qty' : $scope.medicine_item.product_qty 
+                       				  
+                    };
+					
+	var index=null;				
+	for(var i=0;i<$scope.the_runner.medicine_items.length;i++){
+		
+		if( $scope.medicine_item.title == $scope.the_runner.medicine_items[i].title ){
+			index = i;
+		}
+	}
+	
+	 	
+      if( index == null ){
+         $scope.the_runner.medicine_items.push(cart_item);
+	  } 
+    
+	
+   	
+    $scope.medicine_item.title ='';
+    
+    $scope.medicine_item.product_qty = 0;
+   								
+}
+
+
+$scope.add_report = function(){	
+    var cart_item = { 
+                      'title' : $scope.medicine_report.title                                                        					
+                    };
+					
+	var index=null;				
+	for(var i=0;i<$scope.the_runner.medicine_reports.length;i++){
+		
+		if( $scope.medicine_report.title == $scope.the_runner.medicine_reports[i].title ){
+			index = i;
+		}
+	}
+	
+	 	
+      if( index == null ){
+         $scope.the_runner.medicine_reports.push(cart_item);
+	  } 
+    
+	
+   	
+    $scope.medicine_report.title ='';
+    
+   
+   								
+}
+
+$scope.remove_medicine = function(index){
+    $scope.the_runner.medicine_items.splice(index,1);	
+}
+ 
+$scope.remove_report = function(index){
+    $scope.the_runner.medicine_reports.splice(index,1);	
+} 
+ 
+
+
+
+$scope.read_appointments=function(){
+
+    $scope.appointments=[];
+ 
+    CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/cast-appointments?page="+$scope.the_paginate.pageNumber).then(function(response){
+      $scope.appointments     = response.data;
+	  
+      $scope.the_paginate.totalPages   = response.last_page;
+      $scope.the_paginate.currentPage  = response.current_page;
+      var pages = [];
+      for(var i=1;i<=response.last_page;i++) {          
+        pages.push(i);
+      }
+      $scope.the_paginate.range = pages; 	   
+    });  
+	
+	
+ 	
+
+ 
+}
+
+
+$scope.save = function(){
+	
+    CRUDAPI.execute('POST',$scope.the_runner,"http://123.231.52.110/asceso/patient-history-update").then(function(response){
+      NOTICE.execute('Success',response.message);	   
+    });	
+	
+}
+
+
+
+  
+   
+$scope.read_appointments();   
+ 
+});
 
 
 

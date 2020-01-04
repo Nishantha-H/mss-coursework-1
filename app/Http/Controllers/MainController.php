@@ -32,7 +32,7 @@ date_default_timezone_set('Asia/Colombo');
 class MainController extends Controller {
 
     public function __construct(){
-        $this->middleware(['auth:api','cors'])->except('index','login','register','users','read_pages','fetch_privileges','runtime_privileges','profile','appointment','patient_register','invoice','product','product_add','category','category_add','brand','brand_add','report','report_doctor_payment','report_inventory','patient_manage');
+        $this->middleware(['auth:api','cors'])->except('index','login','register','users','read_pages','fetch_privileges','runtime_privileges','profile','appointment','appointment_list','patient_register','invoice','product','product_add','category','category_add','brand','brand_add','report_appointment','report_doctor_payment','report_inventory','patient_manage');
 		//new ConfigEnv();
     }
 
@@ -114,6 +114,19 @@ class MainController extends Controller {
 		  return $this->login();
 		}
     }
+	
+    public function appointment_list()
+    {
+
+		if(Auth::check()){
+          $pack = $this->fetch_privileges();
+          return view('appointment-list')->with('privileges', $pack['privileges'])->with('privileges_subs', $pack['privileges_subs']);
+		}else{
+		  return $this->login();
+		}
+    }	
+	
+	
 
     public function patient_register()
     {
@@ -193,7 +206,7 @@ class MainController extends Controller {
     }
 
 
-    public function report()
+    public function report_appointment()
     {
 
 		if(Auth::check()){

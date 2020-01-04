@@ -32,7 +32,7 @@ class AppointmentController extends Controller
 {
 
     public function __construct(){
-        $this->middleware(['auth:api','cors'])->except('index','show','time_slots','store');
+        $this->middleware(['auth:api','cors'])->except('index','show','time_slots','store','cast_appointments');
     }
 
     public function time_slots()
@@ -41,6 +41,36 @@ class AppointmentController extends Controller
 		 $data['slots'] = TimeSlot::orderBy('id','ASC')->get();
          echo json_encode($data);		 
     }
+	
+
+   public function cast_appointments(Request $request){
+ 
+  
+	   	
+	    $appointments = Appointment::paginate(5);	
+	  
+
+  
+        foreach($appointments as $appointment){
+			
+		  $doctor = Doctor::where('doctor_id',$appointment->doctor_id)->first();
+		  $employee = Employee::where('employee_id',$doctor->employee_id)->first();		  
+		  
+		  $timeslot = TimeSlot::where('id',$appointment->time_slot_id)->first();
+		  $appointment->timeslot_start = $timeslot->start_at;
+		  $appointment->timeslot_end = $timeslot->end_at;
+		  
+		  $appointment->doctor_name =  $employee->first_name.' '.$employee->last_name;
+		  $patient = Patient::where('patient_id',$appointment->patient_id)->first();
+		  $appointment->patient =  $patient;		  
+		  
+		}
+ 
+ 
+		
+	    echo json_encode($appointments); 
+  
+    }	
 
     /**
      * Display a listing of the resource.

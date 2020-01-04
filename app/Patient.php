@@ -10,4 +10,9 @@ class Patient extends Model {
 
     protected $guarded = [];
     //public $timestamps=false;
+
+    public function history()
+    {
+        return $this->hasMany('App\PatientHistory', 'doctor_id', 'patient_id');
+    }
 }

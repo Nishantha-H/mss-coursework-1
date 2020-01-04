@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myApp">
+<html lang="en" ng-app="myApp" >
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -22,147 +22,40 @@
   <script src="http://123.231.52.110/asceso/js/respond.min.js"></script>
   <![endif]-->
   
-<style>
-/**************SEARCH BOX*************/
+  
+  <style>
+.modal-dialog {
 
-.search {
-  position: relative;
-  margin: 0 auto;
-  width: ;
-}
-
-.search input:focus + .search-ac {
-  display: block;
-}
-
-.search-ac {
-  display: block;
-  position: absolute;
-  top: 48px;
-   
+    width: 90%;
  
-  z-index: 10;
-  background: #ffffff;
-  box-shadow:0 3px 3px rgba(0,0,0,.16),0 3px 3px rgba(0,0,0,.23);
-  text-align:left;
-  overflow-y:scroll;
-  max-height:300px;  
-  width:200px;
-   
-}
-.search-ac:hover {
-  display: block;
-}
-.search-ac li {
-  display: block;
-  margin-left:-40px;
-  border-bottom:1px solid #ffffff;
-  cursor:pointer;  
-}
-.search-ac li:first-child {
-  margin-top: ;
-}
 
-.search-ac a {
-  display: block;
-  position: relative;
-  padding:3px;
-  color: #000000;
-  font-weight: 500;
-  text-decoration: none;   
-  border-radius: 0px;
-}
-.search-ac a span {
-  font-weight: 200;
-  color:#999999;
-}
-
-.search-ac a:before {
-  opacity: 0.8;
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  margin-top: -9px;
-  width: 18px;
-  height: 18px;
-  font-family: 'FontAwesome',"Roboto Condensed";
-  content:'\f138';
-  color:#999999;
-}
-
-.search-ac a:hover {
-  color: #000000;
-  background: #f5f5f5;
-}	
-
+} 
 .mail-nav {
 
   
     width: 40%;
 
-}	
-
-</style>  
-  
+} 
+  </style>
   
 </head>
 
-<body class="sticky-header" ng-controller="PatientManageController" >
+<body class="sticky-header" ng-controller="AppointmentController" >
+ 
+ 
+ 
+<div id="edit-appointment" class="modal" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index:1049;width:100%;" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+	    <div class="modal-title">@{{the_runner.patient_name}}
+        <button type="button" class="close" data-dismiss="modal" ng-click="flush()">&times;</button>		
+		</div>
 
-<section>
-    <!-- left side start-->
-    <div class="left-side sticky-left-side">
-        <!--logo and iconic logo start-->
-		@include('layouts.header-logo')
-        <!--logo and iconic logo end-->
-        <div class="left-side-inner">
-            <!-- visible to small devices only -->
-			@include('layouts.header-small')
-            <!--sidebar nav start-->
-            @include('layouts.header')
-            <!--sidebar nav end-->
-        </div>
-    </div>
-    <!-- left side end-->
-    
-    <!-- main content start-->
-    <div class="main-content" >
-
-        <!-- header section start-->
-        <div class="header-section">
-          <!--toggle button start-->
-          <a class="toggle-btn"><i class="fa fa-bars"></i></a>
-          <!--toggle button end-->
-          <!--search start-->
-          <!--<form class="searchform" action="index.html" method="post">
-            <input type="text" class="form-control" name="keyword" placeholder="Search here..." />
-          </form>-->
-          <!--search end-->
-          <!--notification menu start -->
-		  @include('layouts.menu-right')
-          <!--notification menu end -->
-        </div>
-        <!-- header section end-->
-
-        <!-- page heading start-->
-		@include('layouts.title')
-        <!-- page heading end-->
-
-        <!--body wrapper start-->
-        <section class="wrapper">
-        <!-- page start-->
-
-        <div class="row">
-           
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        Patient Manage
-                    </header>
-					
-					
-        
-            <div class="mail-box">
+      </div>
+      <div class="modal-body">		
+ 
+           <div class="mail-box">
 
                 <section class="mail-box-info">
                     <header class="header">
@@ -185,27 +78,25 @@
                         <form class="form-horizontal" role="form">
                             <div class="form-group" style="padding-left:5px;padding-right:5px;" >
                                 <label for="exampleInputEmail1">Symptoms</label>
-                                 <div class="iconic-input">
-                                        <i class="fa fa-user"></i>
+                                  
                                         <textarea rows="3" class="form-control" style="resize:none;" ng-model="the_runner.symptoms" ></textarea>
 										<p class="help-block" ng-if="the_validator.error_symptoms" >This field is required.</p> 
-                                    </div>
+                                 
                             </div>
                             <div class="form-group" style="padding-left:5px;padding-right:5px;" >
                                 <label for="exampleInputEmail1">Diagnosis</label>
-                                 <div class="iconic-input">
-                                        <i class="fa fa-user"></i>
+                                 
                                         <textarea rows="3" class="form-control" style="resize:none;" ng-model="the_runner.diagnosis" ></textarea>
 										<p class="help-block" ng-if="the_validator.error_diagnosis" >This field is required.</p> 
-                                    </div>
+                                    
                             </div>							
                             <div class="form-group" style="padding-left:5px;padding-right:5px;" >
-                                <label for="exampleInputEmail1">Pharmacy</label>
-                                 <div class="iconic-input">
-                                        <i class="fa fa-user"></i>
-                                        <textarea rows="3" class="form-control" style="resize:none;" ng-model="the_runner.pharmacy" ></textarea>
-										<p class="help-block" ng-if="the_validator.error_pharmacy" >This field is required.</p> 
-                                    </div>
+                                <label for="exampleInputEmail1">Remarks</label>
+                                  
+                                       
+                                        <textarea rows="3" class="form-control" style="resize:none;" ng-model="the_runner.remarks" ></textarea>
+										<p class="help-block" ng-if="the_validator.error_remarks" >This field is required.</p> 
+                                     
                             </div>                             							
                              
                            
@@ -257,9 +148,9 @@
                    <tbody>	  			  
                      <tr ng-repeat="product in the_runner.medicine_items track by $index">
                        <td style="text-align:center;" >@{{$index+1}}</td>					 
-                       <td style="text-align:center;" >@{{product.title}}</td>
+                       <td style="text-align:center;" >@{{product.sku}}</td>
                        
-                       <td style="text-align:center;" >@{{product.product_qty}}</td>				
+                       <td style="text-align:center;" >@{{product.qty}}</td>				
                    
                        <td style="text-align:center;" ><button type="button" class="btn btn-danger" ng-click="remove_medicine($index)"  ><i class="fa fa-trash-o"></i></button></td>	  
                      </tr>	  
@@ -277,7 +168,7 @@
                       <div class="col-md-8"> 
   
                           <div > 
-                            <input type="text" placeholder="Medicine" ng-model="medicine_report.title"  class="form-control"  >
+                            <input type="text" placeholder="Report" ng-model="medicine_report.title"  class="form-control"  >
                              
                           </div> 								
   
@@ -350,19 +241,19 @@
                                     <ul class="p-info">
                                         <li>
                                             <div class="title">Name</div>
-                                            <div class="desk">Nishantha Hewawissa</div>
+                                            <div class="desk">@{{the_runner.patient_name}}</div>
                                         </li>
                                         <li>
                                             <div class="title">NIC</div>
-                                            <div class="desk">199117800208</div>
+                                            <div class="desk">@{{the_runner.patient_nic}}</div>
                                         </li>
                                         <li>
                                             <div class="title">Address</div>
-                                            <div class="desk">Kandy SL</div>
+                                            <div class="desk">@{{the_runner.patient_address}}</div>
                                         </li>										
                                         <li>
                                             <div class="title">Contact</div>
-                                            <div class="desk">0123456789</div>
+                                            <div class="desk">@{{the_runner.patient_contact}}</div>
                                         </li>
                                     </ul>
                                 </div>
@@ -396,13 +287,129 @@
 				
 				
 				
-            </div>
+            </div>                    
 
-        					
-					
-					
-					
-                   
+	  </div>
+      <div class="modal-footer" style="text-align:center;" >
+	  </div>
+    </div>
+  </div>
+</div> 
+ 
+ 
+ 
+<section>
+    <!-- left side start-->
+    <div class="left-side sticky-left-side">
+        <!--logo and iconic logo start-->
+		@include('layouts.header-logo')
+        <!--logo and iconic logo end-->
+        <div class="left-side-inner">
+            <!-- visible to small devices only -->
+			@include('layouts.header-small')
+            <!--sidebar nav start-->
+            @include('layouts.header')
+            <!--sidebar nav end-->
+        </div>
+    </div>
+    <!-- left side end-->
+    
+    <!-- main content start-->
+    <div class="main-content" >
+
+        <!-- header section start-->
+        <div class="header-section">
+          <!--toggle button start-->
+          <a class="toggle-btn"><i class="fa fa-bars"></i></a>
+          <!--toggle button end-->
+          <!--search start-->
+          <!--<form class="searchform" action="index.html" method="post">
+            <input type="text" class="form-control" name="keyword" placeholder="Search here..." />
+          </form>-->
+          <!--search end-->
+          <!--notification menu start -->
+		  @include('layouts.menu-right')
+          <!--notification menu end -->
+        </div>
+        <!-- header section end-->
+
+        <!-- page heading start-->
+		@include('layouts.title')
+        <!-- page heading end-->
+
+        <!--body wrapper start-->
+        <section class="wrapper">
+        <!-- page start-->
+
+        <div class="row">
+           
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+					Products
+							<div class="pull-right" style="margin-top:-5px; ">
+                              <form class="form-inline" role="form" style="display:inline;margin-right:0px;">
+                             							  
+                               <!-- <div class="form-group">							 
+                            <select class="form-control input-sm m-bot15" style="text-align:right;display:inline;" ng-model="the_runner.where_field" >                                                                 							
+                                <option   value="name" selected="selected"  >Name</option>
+								<option   value="email"  >Email</option>
+								<option   value="company_id" >Company</option>
+                                <option   value="department_id"   >Department</option>	
+                                <option   value="designation"   >Designation</option> 
+                                <option   value="employee_number"   >Employee Number</option>
+                                <option   value="nic"   >NIC</option>								
+                            </select>
+                                </div>    -->                        							  
+                                <div class="form-group">							 
+                                  <input type="text" placeholder="Keywords" class="form-control input-sm m-bot15" style="width:200px;display:inline;text-align:right;" ng-model="the_runner.keyword"  />
+                                </div>                            
+                              </form>							
+                            </div>	
+                    </header>
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form" action="{{ route('register') }}" method="post" >
+                            <?php
+                              if(count($errors)>0){
+				                echo '<div class="alert alert-danger" style="width:100%;text-align:center;margin-left:auto;margin-right:auto;" >';	
+	                              foreach($errors->all() as $error){	              	  								
+		                            echo $error.'<br>';	              
+	                              }
+				                echo '</div>';
+                              } 
+                            ?> 						
+             <table class="table table-striped">
+              <thead>	  
+                <td style="text-align:center;" >APPOINTMENT ID</td>
+                <td style="text-align:center;" >DATE</td> 				
+                <td style="text-align:center;" >PATIENT</td>	  
+                <td style="text-align:center;" >DOCTOR</td>	  				
+                <td style="text-align:center;" >TIME</td>	  								 
+                <td style="text-align:center;" >ACTION</td>	  												
+              </thead>	  
+              <tbody>	  			  
+                <tr ng-repeat="appointment in appointments">
+                <td style="text-align:center;" >@{{appointment.id}}</td>		
+                <td style="text-align:center;" >@{{appointment.date}}</td>								
+                <td style="text-align:center;" >@{{appointment.patient.name}}</td>								
+                <td style="text-align:center;" >@{{appointment.doctor_name}}</td>						
+                <td style="text-align:center;" >@{{appointment.timeslot_start}} @{{appointment.timeslot_end}}</td>										
+               					
+				
+              
+                <td style="text-align:center;" >
+				<button type="button" class="btn btn-sm btn-primary" ng-click="set_appointment(appointment);" data-toggle="modal" data-target="#edit-appointment" ><i class="fa fa-edit"></i></button>
+				</td>	  
+                </tr>	  
+              </tbody>	  			  				
+            </table>     
+
+            <div class="col-md-12" style="text-align:center;">
+              <products-pagination></products-pagination>
+            </div>			
+			
+                        </form>
+                    </div>
                 </section>
             </div>
         </div>
@@ -419,7 +426,8 @@
     </div>
     <!-- main content end-->
 </section>
-    <script type="text/javascript" src="http://123.231.52.110/asceso/js/angular.min.js"></script>
+
+<script type="text/javascript" src="http://123.231.52.110/asceso/js/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
     <script src="http://rawgit.com/angular-ui/angular-google-maps/2.0.X/dist/angular-google-maps.js?key=AIzaSyBBGwrHXcGj52OZQiggdrefxVDnj-Jm2Qc"></script>
 	<script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBBGwrHXcGj52OZQiggdrefxVDnj-Jm2Qc'></script>
@@ -443,7 +451,7 @@
 <!--range picker-->
 <script src="http://123.231.52.110/asceso/css/rangepicker/angular-messages.js"></script>
 <script src="http://123.231.52.110/asceso/css/rangepicker/daterangepicker.js"></script>	
-<script src="http://123.231.52.110/asceso/css/rangepicker/angular-daterangepicker.js"></script>
+<script src="http://123.231.52.110/asceso/css/rangepicker/angular-daterangepicker.js"></script>	
 
 <!--common scripts for all pages-->
 <script src="http://123.231.52.110/asceso/js/scripts.js"></script>
